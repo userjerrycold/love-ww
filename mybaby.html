@@ -1,0 +1,346 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>My Baby 专属空间</title>
+    <style>
+        :root {
+            --primary: #ff7eb9;
+            --secondary: #ff65a3;
+            --glass: rgba(255, 255, 255, 0.25);
+            --glass-border: rgba(255, 255, 255, 0.3);
+            --text: #333;
+            --bg: #fff5f7;
+        }
+
+        @keyframes float {
+            0% { transform: translateY(0px); }
+            50% { transform: translateY(-10px); }
+            100% { transform: translateY(0px); }
+        }
+
+        @keyframes fadeIn {
+            from { opacity: 0; }
+            to { opacity: 1; }
+        }
+
+        body {
+            margin: 0;
+            padding: 0;
+            background: var(--bg);
+            color: var(--text);
+            font-family: 'Helvetica Neue', Arial, 'Microsoft Yahei', sans-serif;
+            line-height: 1.6;
+            overflow-x: hidden;
+            animation: fadeIn 1s ease-in-out;
+        }
+
+        .floating-hearts {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            pointer-events: none;
+            z-index: -1;
+        }
+
+        .heart {
+            position: absolute;
+            font-size: 20px;
+            color: rgba(255, 126, 185, 0.6);
+            animation: float 3s infinite ease-in-out;
+        }
+
+        /* 玻璃质感照片墙 */
+        .gallery-container {
+            padding: 30px 0;
+            background: linear-gradient(135deg, rgba(255, 228, 230, 0.7) 0%, rgba(255, 215, 215, 0.5) 100%);
+            backdrop-filter: blur(10px);
+            box-shadow: 0 4px 30px rgba(0, 0, 0, 0.1);
+            border-bottom: 1px solid var(--glass-border);
+            margin-bottom: 30px;
+            position: relative;
+            overflow: hidden;
+        }
+
+        .gallery-container::before {
+            content: '';
+            position: absolute;
+            top: -50%;
+            left: -50%;
+            width: 200%;
+            height: 200%;
+            background: radial-gradient(circle, rgba(255,255,255,0.1) 0%, rgba(255,255,255,0) 70%);
+            pointer-events: none;
+        }
+
+        .gallery-title {
+            text-align: center;
+            font-size: 24px;
+            color: var(--primary);
+            margin-bottom: 20px;
+            text-shadow: 0 2px 4px rgba(0,0,0,0.1);
+            position: relative;
+        }
+
+        .gallery-title::after {
+            content: '';
+            display: block;
+            width: 60px;
+            height: 3px;
+            background: var(--primary);
+            margin: 10px auto;
+            border-radius: 3px;
+        }
+
+        .photo-wall {
+            display: flex;
+            overflow-x: auto;
+            padding: 20px;
+            gap: 20px;
+            scroll-snap-type: x mandatory;
+            scroll-behavior: smooth;
+            -webkit-overflow-scrolling: touch;
+        }
+
+        .photo-wall::-webkit-scrollbar {
+            height: 8px;
+        }
+
+        .photo-wall::-webkit-scrollbar-track {
+            background: rgba(0,0,0,0.05);
+            border-radius: 10px;
+        }
+
+        .photo-wall::-webkit-scrollbar-thumb {
+            background: var(--primary);
+            border-radius: 10px;
+        }
+
+        .photo-item {
+            scroll-snap-align: center;
+            min-width: 250px;
+            height: 300px;
+            border-radius: 20px;
+            overflow: hidden;
+            box-shadow: 0 10px 30px rgba(0, 0, 0, 0.15);
+            transition: transform 0.3s, box-shadow 0.3s;
+            position: relative;
+            background: var(--glass);
+            backdrop-filter: blur(5px);
+            border: 1px solid var(--glass-border);
+        }
+
+        .photo-item:hover {
+            transform: translateY(-5px) scale(1.02);
+            box-shadow: 0 15px 35px rgba(0, 0, 0, 0.2);
+        }
+
+        .photo-item img {
+            width: 100%;
+            height: 100%;
+            object-fit: cover;
+            transition: transform 0.5s;
+        }
+
+        .photo-item:hover img {
+            transform: scale(1.05);
+        }
+
+        /* 卡片布局 */
+        .container {
+            max-width: 1200px;
+            margin: 0 auto;
+            padding: 0 20px;
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+            gap: 25px;
+            margin-bottom: 50px;
+        }
+
+        .card {
+            background: var(--glass);
+            backdrop-filter: blur(8px);
+            padding: 25px;
+            border-radius: 20px;
+            box-shadow: 0 8px 32px rgba(0, 0, 0, 0.05);
+            border: 1px solid var(--glass-border);
+            transition: transform 0.3s, box-shadow 0.3s;
+        }
+
+        .card:hover {
+            transform: translateY(-5px);
+            box-shadow: 0 12px 40px rgba(0, 0, 0, 0.1);
+        }
+
+        h2 {
+            color: var(--primary);
+            margin-top: 0;
+            position: relative;
+            padding-bottom: 10px;
+        }
+
+        h2::after {
+            content: '';
+            position: absolute;
+            bottom: 0;
+            left: 0;
+            width: 50px;
+            height: 3px;
+            background: linear-gradient(to right, var(--primary), var(--secondary));
+            border-radius: 3px;
+        }
+
+        .tag {
+            display: inline-block;
+            background: linear-gradient(to right, rgba(255, 126, 185, 0.2), rgba(255, 101, 163, 0.2));
+            padding: 5px 15px;
+            border-radius: 20px;
+            margin: 5px;
+            font-size: 14px;
+            transition: transform 0.2s;
+        }
+
+        .tag:hover {
+            transform: scale(1.05);
+        }
+
+        /* 响应式设计 */
+        @media (max-width: 768px) {
+            .photo-item {
+                min-width: 200px;
+                height: 250px;
+            }
+            
+            .container {
+                grid-template-columns: 1fr;
+            }
+        }
+    </style>
+</head>
+<body>
+    <!-- 浮动爱心背景 -->
+    <div class="floating-hearts" id="hearts-container"></div>
+
+    <!-- 玻璃质感照片墙 -->
+    <div class="gallery-container">
+        <h2 class="gallery-title">📸 我们的记忆</h2>
+        <div class="photo-wall">
+            <div class="photo-item">
+                <img src="1.jpg" alt="我们的记忆1">
+            </div>
+            <div class="photo-item">
+                <img src="2.jpg" alt="我们的记忆2">
+            </div>
+            <div class="photo-item">
+                <img src="3.jpg" alt="我们的记忆3">
+            </div>
+            <div class="photo-item">
+                <img src="4.jpg" alt="我们的记忆4">
+            </div>
+            <div class="photo-item">
+                <img src="5.jpg" alt="我们的记忆5">
+            </div>
+        </div>
+    </div>
+
+    <!-- 信息卡片 -->
+    <div class="container">
+        <div class="card">
+            <h2>📆 重要时刻</h2>
+            <p><span style="color: var(--primary);">📅</span> 本月姨妈日：1月16日</p>
+            <p><span style="color: var(--primary);">🎂</span> 生日：1994年11月1日</p>
+            <p><span style="color: var(--primary);">💍</span> 求婚日：2024年12月1日</p>
+            <p><span style="color: var(--primary);">👰</span> 结婚日：2024年12月28日</p>
+        </div>
+
+        <div class="card">
+            <h2>📏 身体数据</h2>
+            <p><span style="color: var(--primary);">👠</span> 身高：169cm</p>
+            <p><span style="color: var(--primary);">⚖️</span> 体重：60kg ±</p>
+            <p><span style="color: var(--primary);">👟</span> 鞋码：38</p>
+            <p><span style="color: var(--primary);">💍</span> 指围：无名指17 / 中指20</p>
+        </div>
+
+        <div class="card">
+            <h2>✨ 闪光点</h2>
+            <div class="tag">身材高挑</div>
+            <div class="tag">持家有道</div>
+            <div class="tag">高情商</div>
+            <div class="tag">专一真诚</div>
+            <div class="tag">生活精致</div>
+            <div class="tag">沟通达人</div>
+            <div class="tag">拍照大师</div>
+        </div>
+
+        <div class="card">
+            <h2>🍴 饮食偏好</h2>
+            <p><span style="color: var(--primary);">❤️</span> 最爱：榴莲、虾、玉米、红豆面包、枣泥核桃蛋糕</p>
+            <p><span style="color: var(--primary);">🚫</span> 不喜：香蕉</p>
+        </div>
+
+        <div class="card">
+            <h2>🌟 特别关注</h2>
+            <p><span style="color: var(--primary);">🤰</span> 当前孕期：12周5天</p>
+            <p><span style="color: var(--primary);">📅</span> 预产期：2025年10月23日</p>
+            <p><span style="color: var(--primary);">🧴</span> 护肤品：Clarins双萃精华 / 珀莱雅日用精华</p>
+        </div>
+    </div>
+
+    <script>
+        // 创建浮动爱心
+        function createHearts() {
+            const container = document.getElementById('hearts-container');
+            const heartCount = 20;
+            
+            for (let i = 0; i < heartCount; i++) {
+                const heart = document.createElement('div');
+                heart.className = 'heart';
+                heart.innerHTML = '❤️';
+                heart.style.left = Math.random() * 100 + 'vw';
+                heart.style.top = Math.random() * 100 + 'vh';
+                heart.style.opacity = Math.random() * 0.5 + 0.3;
+                heart.style.animationDuration = (Math.random() * 3 + 2) + 's';
+                heart.style.animationDelay = (Math.random() * 5) + 's';
+                container.appendChild(heart);
+            }
+        }
+
+        // 照片墙自动滚动效果
+        function autoScrollGallery() {
+            const gallery = document.querySelector('.photo-wall');
+            let scrollAmount = 0;
+            const scrollSpeed = 1;
+            
+            function scroll() {
+                scrollAmount += scrollSpeed;
+                if (scrollAmount >= gallery.scrollWidth - gallery.clientWidth) {
+                    scrollAmount = 0;
+                }
+                gallery.scrollLeft = scrollAmount;
+                requestAnimationFrame(scroll);
+            }
+            
+            // 只在非触摸设备上自动滚动
+            if (!('ontouchstart' in window)) {
+                requestAnimationFrame(scroll);
+            }
+        }
+
+        // 初始化
+        window.onload = function() {
+            createHearts();
+            autoScrollGallery();
+            
+            // 为卡片添加进场动画
+            const cards = document.querySelectorAll('.card');
+            cards.forEach((card, index) => {
+                card.style.animation = `fadeIn 0.5s ease-out forwards ${index * 0.1 + 0.5}s`;
+                card.style.opacity = 0;
+            });
+        };
+    </script>
+</body>
+</html>
