@@ -1,0 +1,81 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+    <title>给宝贝的爱心💖</title>
+    <style>
+        body {
+            background: #ffe6f2;
+            margin: 0;
+            overflow: hidden;
+            font-family: 'Microsoft Yahei', sans-serif;
+        }
+        #container {
+            position: relative;
+            height: 100vh;
+        }
+        .heart {
+            position: absolute;
+            color: #ff4081;
+            font-size: 20px;
+            animation: float 3s linear forwards;
+            pointer-events: none;
+        }
+        @keyframes float {
+            0% { transform: translateY(0) scale(1); opacity: 1; }
+            100% { transform: translateY(-100vh) scale(0); opacity: 0; }
+        }
+        #message {
+            position: absolute;
+            top: 50%;
+            left: 50%;
+            transform: translate(-50%, -50%);
+            text-align: center;
+            color: #ff4081;
+        }
+        #prompt {
+            font-size: 24px;
+            margin-bottom: 20px;
+            text-shadow: 2px 2px 4px rgba(0,0,0,0.1);
+        }
+    </style>
+</head>
+<body>
+    <div id="container">
+        <div id="message">
+            <h1 id="prompt">点击屏幕送爱心给宝贝💖</h1>
+            <p>已发送 <span id="count">0</span> 颗爱心</p>
+        </div>
+    </div>
+
+    <script>
+        let count = 0;
+        const container = document.getElementById('container');
+        const counter = document.getElementById('count');
+
+        container.addEventListener('click', (e) => {
+            // 创建爱心
+            const heart = document.createElement('div');
+            heart.className = 'heart';
+            heart.innerHTML = '💖';
+            heart.style.left = e.clientX + 'px';
+            heart.style.top = e.clientY + 'px';
+            
+            container.appendChild(heart);
+            
+            // 更新计数器
+            counter.textContent = ++count;
+            
+            // 3秒后移除爱心元素
+            setTimeout(() => heart.remove(), 3000);
+        });
+
+        // 自动跳动特效
+        setInterval(() => {
+            counter.style.transform = 'scale(1.2)';
+            setTimeout(() => counter.style.transform = 'scale(1)', 200);
+        }, 1000);
+    </script>
+</body>
+</html>
